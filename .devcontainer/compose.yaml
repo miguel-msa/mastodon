@@ -18,8 +18,8 @@ services:
       DB_USER: postgres
       DB_PASS: postgres
       DB_PORT: '5432'
-      ES_ENABLED: 'true'
-      ES_HOST: es
+      ES_ENABLED: 'false'
+      #ES_HOST: es
       ES_PORT: '9200'
       LIBRE_TRANSLATE_ENDPOINT: http://libretranslate:5000
       LOCAL_DOMAIN: ${LOCAL_DOMAIN:-localhost:3000}
@@ -44,7 +44,10 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - '5432:5432'
     networks:
+      - external_network
       - internal_network
 
   redis:
@@ -55,22 +58,22 @@ services:
     networks:
       - internal_network
 
-  es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
-    restart: unless-stopped
-    environment:
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
-      cluster.name: es-mastodon
-      discovery.type: single-node
-      bootstrap.memory_lock: 'true'
-    volumes:
-      - es-data:/usr/share/elasticsearch/data
-    networks:
-      - internal_network
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+  #es:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+  #  restart: unless-stopped
+  #  environment:
+  #    ES_JAVA_OPTS: -Xms512m -Xmx512m
+  #    cluster.name: es-mastodon
+  #    discovery.type: single-node
+  #    bootstrap.memory_lock: 'true'
+  #  volumes:
+  #    - es-data:/usr/share/elasticsearch/data
+  #  networks:
+  #    - internal_network
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
 
   libretranslate:
     image: libretranslate/libretranslate:v1.6.2
